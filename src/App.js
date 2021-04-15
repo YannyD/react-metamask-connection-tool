@@ -1,4 +1,3 @@
-import './App.css';
 import { lazy, Suspense } from 'react';
 import { ethers } from "ethers";
 

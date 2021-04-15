@@ -103,6 +103,7 @@ export const AccountLine = styled.p`
         font-size: 16px;
         color: white;
         margin-top: 35px;
+        text-align: center;
 `
 
 export const CopyAccount = styled.button`
