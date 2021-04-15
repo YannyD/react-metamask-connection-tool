@@ -1,5 +1,5 @@
-Component built by Yan Digilov
-yan@pandi.fi
+Component built by Yan Digilov<br>
+yan@pandi.fi<br>
 MIT Open Source License
 
 #  REACT - METAMASK Connection Tool
