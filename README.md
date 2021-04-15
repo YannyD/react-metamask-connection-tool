@@ -1,3 +1,7 @@
+Component built by Yan Digilov
+yan@pandi.fi
+MIT Open Source License
+
 #  REACT - METAMASK Connection Tool
 This is a simple component tool to connect to a metamask wallet from the front-end of
 any React.js application. 
