@@ -36,4 +36,6 @@ const StatusBar = lazy(()=>import("./Components/StatusBar"));
 </Suspense>
 ```
 
-![Sample1](./React-Tool-Sample1)
+![Sample1](./src/React-Tool-Sample1.jpg)
+![Sample2](./src/React-Tool-Sample2.jpg)
+![Sample3](./src/React-Tool-Sample3.jpg)

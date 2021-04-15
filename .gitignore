@@ -11,11 +11,13 @@
 # production
 /build
 /public
-App.css
-App.js
-index.css
-index.reportWebVitals.js
-setupTests.js
+/src/App.test.js
+/src/App.css
+/src/App.js
+/src/index.css
+/src/index.js
+/src/reportWebVitals.js
+/src/setupTests.js
 
 # misc
 .DS_Store
