@@ -5,11 +5,12 @@ export const Bar = styled.div`
     background: white;
     border-radius: 15px;
     color: white;
-    height: 250px;
+    height: 260px;
     width: 200px;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: 'Lato', Calibri, Arial, sans-serif;
 `
 export const InstallStatus = styled.button`
     color: ${(props) => (props.color ? props.color : 'black')};
@@ -37,7 +38,7 @@ export const InstallStatus = styled.button`
     }
 
     &:disabled{
-        background: green;
+        background: ${(props) => (props.color ? props.color : 'black')};x   ;
         color: white;
     }
 `
@@ -86,7 +87,7 @@ export const AccountDetails = styled.div`
         border-radius: 15px;
         font-family: 'Lato', Calibri, Arial, sans-serif;
         position:absolute;
-        top:188px;
+        top:199px;
         width: 200px;
         justify-content: center;
 `
@@ -103,7 +104,7 @@ export const AccountLine = styled.p`
         font-size: 16px;
         color: white;
         margin-top: 35px;
-        text-align: center;
+        text-align: center; 
 `
 
 export const CopyAccount = styled.button`

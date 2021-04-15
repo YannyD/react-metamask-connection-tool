@@ -1,16 +1,14 @@
-#  REACT - METAMASK Connection Cookbook
-This is a guide for establishing a metamask connection button and status bar using the create-react-app template
+#  REACT - METAMASK Connection Tool
+This is a simple tool to connect to a metamask wallet from the front-end of
+any React.js application. 
 
-STEP 1:  Run npx create-react-app new-app-name
+It determines whether a user has metamask installed and takes them through the steps of establishing a connection.  Once a connection is made, it displays account information for easy access.  
 
-A full decription of creat-react-app scripts and configurations can be found at https://github.com/facebook/create-react-app 
+It uses the following dependencies to establish a connection:
+-  MetaMask Onboarding library:  https://docs.metamask.io/guide/onboarding-library.html
+-  MetaMask Detect Provider: https://www.npmjs.com/package/@metamask/detect-provider
 
-Step 2:  We add the styled-components library to make basic css component styles
-
-Step 3: Import ethers.js with npm/ yarn
-
-Step 4:  Import MetaMask Detect Provider 
-
-Step 5: Import MetaMask Onboarding library
-
-Step 6: Install web3-react MAYBE NOT NEEDED
+It uses the following style libraries:
+-  Styled Components: https://styled-components.com/
+-  @yaireo/title-tooltip:  https://www.npmjs.com/package/@yaireo/title-tooltip
+-  Nanopop:  https://github.com/Simonwep/nanopop
