@@ -6,15 +6,17 @@ import titleTooltip from '@yaireo/title-tooltip';
 import '@yaireo/title-tooltip/title-tooltip.css';
 import {reposition} from 'nanopop';
 
+
 export default function StatusBar() {
 
-// using Nanopop lib for positioning
+// using Nanopop lib for title positioning
 titleTooltip({
   onShow: function(reference, popper){
     reposition(reference, popper,{position: 'bottom-middle'})
   }
 })
 
+//function to copy address of connected metamask account
   const addressCopy = async()=>{
     let copyText = await getConnectedAccount();
     let copyAddy = await copyText[0][0];
@@ -26,6 +28,8 @@ titleTooltip({
     document.body.removeChild(tempTextArea);
   }
 
+
+  //Function creates actions when connection status or connected address changes
   const connectionAction = async (foundStatus)=>{
     if(foundStatus==true){
       setConnectText("\u2713 Connected")
@@ -56,7 +60,8 @@ titleTooltip({
     }
   }  
   
-  //Ethereum.isMetaMask and detectEthereumProvider look for metamask installed in the browser
+  //Ethereum.isMetaMask and detectEthereumProvider look for metamask installed in the browser.
+  //When both are true, you can be sure MetaMask is installed.  
     const isMetaMaskInstalled = async () => {
       //Have to check the ethereum binding on the window object to see if it's installed
       const { ethereum } = window;
@@ -65,21 +70,19 @@ titleTooltip({
       return Boolean(ethereum && ethereum.isMetaMask && value===ethereum);
     };
 
-
-    //enable metamask installation button
+    //enable metamask installation button, used in the onClickInstall Function
     const onboarding = new MetaMaskOnboarding();
 
+    //Function to install metamask
     const onClickInstall = () => {
         setInstallText('Reload After Install');
         setInstallDisabledStatus(true);
-        //On this object we have startOnboarding which will start the onboarding process for our end user
         onboarding.startOnboarding();
       };
 
+      //function to connect to a chain
       const onClickConnect = async () => {
         try {
-          // Will open the MetaMask UI
-          // You should disable this button while the request is pending!
           const { ethereum } = window;
           await ethereum.request({ method: 'eth_requestAccounts' });
         } catch (error) {
@@ -87,6 +90,8 @@ titleTooltip({
         }
       }
 
+      //function to collect connected account and chain information.
+      //returns values in an array
       const getConnectedAccount = async () =>{
         try{
           const {ethereum} = window;
@@ -98,6 +103,7 @@ titleTooltip({
           console.log(error);
         }
       }
+      
         let installed = false;
         let [installText, setInstallText]  = useState("Searching for MetaMask");
         let [ installDisabledStatus, setInstallDisabledStatus] = useState(false);
