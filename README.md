@@ -17,7 +17,7 @@ It uses the following style libraries:
 -  Styled Components: https://styled-components.com/
 
 # Searches for MetaMask Installation.
-![Sample1](./src/React-ToolSample1.jpg)<br>
+![Sample1](./src/React-Tool-Sample1.jpg)<br>
 
 # Identifies connected addresses
 ![Sample2](./src/React-Tool-Sample2.jpg)<br>
