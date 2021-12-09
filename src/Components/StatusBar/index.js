@@ -1,171 +1,169 @@
-import React, {useState, useEffect} from 'react'
-import * as S from './style.js';
-import detectEthereumProvider from '@metamask/detect-provider';
-import MetaMaskOnboarding from '@metamask/onboarding';
-import titleTooltip from '@yaireo/title-tooltip';
-import '@yaireo/title-tooltip/title-tooltip.css';
-import {reposition} from 'nanopop';
+import React, { useState, useEffect } from "react";
+import * as S from "./style.js";
+import detectEthereumProvider from "@metamask/detect-provider";
+import MetaMaskOnboarding from "@metamask/onboarding";
+import Tooltip from "@mui/material/Tooltip";
 
+const statusColorCode = {
+  true: "#76977D",
+  false: "#DC7260",
+  neither: "grey",
+};
 
 export default function StatusBar() {
-
-// using Nanopop lib for title positioning
-titleTooltip({
-  onShow: function(reference, popper){
-    reposition(reference, popper,{position: 'bottom-middle'})
-  }
-})
-
-//function to copy address of connected metamask account
-  const addressCopy = async()=>{
+  //function to copy address of connected metamask account
+  const addressCopy = async () => {
     let copyText = await getConnectedAccount();
     let copyAddy = await copyText[0][0];
-    const tempTextArea = document.createElement('textarea');
+    const tempTextArea = document.createElement("textarea");
     tempTextArea.value = copyAddy;
     document.body.appendChild(tempTextArea);
-    tempTextArea.select();
-    document.execCommand('copy');
+    navigator.clipboard.writeText(tempTextArea.value);
     document.body.removeChild(tempTextArea);
-  }
-
+  };
 
   //Function creates actions when connection status or connected address changes
-  const connectionAction = async (foundStatus)=>{
-    if(foundStatus==true){
-      setConnectText("\u2713 Connected")
-      setStatusColor("green")
-      setConnectDisable(true)
-      setDisplayStatus("flex")
-      getConnectedAccount().then((result)=>{
-        setConnectedAddress(result[0][0].slice(0,7))
-        if(result[1]=="0x1") setConnectedChain("Mainnet")
-        else if(result[1]=="0x3") setConnectedChain("Ropsten")
-        else if(result[1]=="0x4") setConnectedChain("Rinkeby")
-        else if(result[1]=="0x5") setConnectedChain("Goerli")
-        else if(result[1]=="0x2a") setConnectedChain("Kovam")
-        else setConnectedChain("Unknown Chain")
-      })
+  const connectionAction = async (foundStatus) => {
+    if (foundStatus == true) {
+      setConnectText("\u2713 Connected");
+      setStatusColor(statusColorCode.true);
+      setConnectDisable(true);
+      setDisplayStatus("flex");
+      getConnectedAccount().then((result) => {
+        setConnectedAddress(result[0][0]);
+        if (result[1] == "0x61") setConnectedChain("BSC Test");
+        else if (result[1] == "0x38") setConnectedChain("BSC Mainnet");
+        else {
+          setConnectedChain("Unknown Chain");
+        }
+      });
       setConnectBackground("green");
-      setConnectTextColor("white")
-  }
-    else{
-      setStatusColor("red");
+      setConnectTextColor("white");
+    } else {
+      setStatusColor(statusColorCode.false);
       setConnectText("Connect Account");
-      setConnectDisable(false)
-      setDisplayStatus("none")
+      setConnectDisable(false);
+      setDisplayStatus("none");
       setConnectBackground("white");
-      setConnectTextColor("red")
-
-
+      setConnectTextColor("red");
     }
-  }  
-  
+  };
+
   //Ethereum.isMetaMask and detectEthereumProvider look for metamask installed in the browser.
-  //When both are true, you can be sure MetaMask is installed.  
-    const isMetaMaskInstalled = async () => {
-      //Have to check the ethereum binding on the window object to see if it's installed
+  //When both are true, you can be sure MetaMask is installed.
+  const isMetaMaskInstalled = async () => {
+    //Have to check the ethereum binding on the window object to see if it's installed
+    const { ethereum } = window;
+    let value = await detectEthereumProvider();
+
+    return Boolean(ethereum && ethereum.isMetaMask && value === ethereum);
+  };
+
+  //enable metamask installation button, used in the onClickInstall Function
+  const onboarding = new MetaMaskOnboarding();
+
+  //Function to install metamask
+  const onClickInstall = () => {
+    setInstallText("Reload After Install");
+    onboarding.startOnboarding();
+  };
+
+  //function to connect to a chain
+  const onClickConnect = async () => {
+    try {
       const { ethereum } = window;
-      let value = await detectEthereumProvider();
+      await ethereum.request({ method: "eth_requestAccounts" });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-      return Boolean(ethereum && ethereum.isMetaMask && value===ethereum);
-    };
+  //function to collect connected account and chain information.
+  //returns values in an array
+  const getConnectedAccount = async () => {
+    try {
+      const { ethereum } = window;
+      const accounts = await ethereum.request({ method: "eth_accounts" });
+      const chainId = await ethereum.request({ method: "eth_chainId" });
+      return [accounts, chainId];
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-    //enable metamask installation button, used in the onClickInstall Function
-    const onboarding = new MetaMaskOnboarding();
+  let installed = false;
+  let [installText, setInstallText] = useState("Searching for MetaMask");
+  let [connectText, setConnectText] = useState("Connect Account");
+  let [statusColor, setStatusColor] = useState(statusColorCode.neither);
+  let [connectDisable, setConnectDisable] = useState(true);
+  let [installButtonColor, setInstallButtonColor] = useState();
+  let [displayStatus, setDisplayStatus] = useState("none");
+  let [connectedAddress, setConnectedAddress] = useState("0x0000000000000000000000000000000000000000");
+  let [connectedChain, setConnectedChain] = useState();
+  let [connectBackground, setConnectBackground] = useState(statusColorCode.neither);
+  let [connectTextColor, setConnectTextColor] = useState({ statusColor });
 
-    //Function to install metamask
-    const onClickInstall = () => {
-        setInstallText('Reload After Install');
-        setInstallDisabledStatus(true);
-        onboarding.startOnboarding();
-      };
-
-      //function to connect to a chain
-      const onClickConnect = async () => {
-        try {
-          const { ethereum } = window;
-          await ethereum.request({ method: 'eth_requestAccounts' });
-        } catch (error) {
-          console.error(error);
-        }
+  useEffect(async () => {
+    const { ethereum } = window;
+    installed = await isMetaMaskInstalled();
+    if (installed) {
+      setInstallButtonColor(statusColorCode.true);
+      setInstallText("MetaMask Installed");
+      setConnectDisable(false);
+      let activeAccounts = await getConnectedAccount();
+      if (activeAccounts[0].length > 0) {
+        connectionAction(true);
+      } else {
+        connectionAction(false);
       }
 
-      //function to collect connected account and chain information.
-      //returns values in an array
-      const getConnectedAccount = async () =>{
-        try{
-          const {ethereum} = window;
-          const accounts = await ethereum.request({method: 'eth_accounts'})
-          const chainId = await ethereum.request({method: 'eth_chainId'})
-          return [accounts, chainId];
+      ethereum.on("accountsChanged", (accounts) => {
+        if (accounts.length > 0) {
+          connectionAction(true);
+        } else {
+          window.location.reload();
         }
-        catch(error){
-          console.log(error);
-        }
-      }
-      
-        let installed = false;
-        let [installText, setInstallText]  = useState("Searching for MetaMask");
-        let [ installDisabledStatus, setInstallDisabledStatus] = useState(false);
-        let [connectText, setConnectText] = useState("Connect Account");
-        let [statusColor, setStatusColor] = useState();
-        let [connectDisable, setConnectDisable] = useState(false);
-        let [installButtonColor, setInstallButtonColor] = useState();
-        let [displayStatus, setDisplayStatus] = useState("none");
-        let [connectedAddress, setConnectedAddress] = useState();
-        let [connectedChain, setConnectedChain] = useState();
-        let[connectBackground, setConnectBackground] = useState("white");
-        let [connectTextColor, setConnectTextColor] = useState({statusColor})
+      });
+    } else {
+      setInstallText("Click To Install MetaMask");
+      setInstallButtonColor(statusColorCode.false);
+      setConnectDisable(true);
+      setStatusColor("grey");
+    }
+  }, []);
 
-    useEffect(
-        async()=>{
-          const {ethereum} = window;
-            installed = await isMetaMaskInstalled();
-            if(installed) {
-              setInstallButtonColor("green");
-              setInstallText("MetaMask Installed");
-              setInstallDisabledStatus(true);
-              setConnectDisable(false)
-              let activeAccounts = await getConnectedAccount();
-              if(activeAccounts[0].length>0){
-                connectionAction(true);
-              }
-              else{
-                connectionAction(false);
-              }
-
-              ethereum.on('accountsChanged', (accounts) => {
-                if(accounts.length>0){
-                  connectionAction(true);
-                }
-                else {
-                  connectionAction(false);
-                }  
-              }) 
-            }
-            else {
-                setInstallText("Install MetaMask");
-                setInstallButtonColor("red")
-                setConnectDisable(true);
-                setStatusColor("grey");
-            }
-    }, []
-    )
-
-    return (
-        <S.Bar>
-            <S.InstallStatus color = {installButtonColor} disabled = {installDisabledStatus} onClick = {()=>onClickInstall()}>{installText}</S.InstallStatus>
-            <S.Dot color={statusColor}></S.Dot>
-            <S.Dot color={statusColor}></S.Dot>
-            <S.Dot color={statusColor}></S.Dot>
-            <S.Arrow color={statusColor}>{"\u25bc"}</S.Arrow>
-            <S.Connect background={connectBackground} disabled = {connectDisable} color={connectTextColor} onClick={()=>onClickConnect()}>{connectText}</S.Connect>
-            <S.AccountDetails display={displayStatus}>
-              <S.AddressRow>
-                <S.CopyAccount onClick={()=>addressCopy()} title="Click to Copy Full Address">Address Starts: <b>{connectedAddress}</b></S.CopyAccount>
-                <S.AccountLine>Chain: <b>{connectedChain}</b></S.AccountLine>  
-              </S.AddressRow>
-            </S.AccountDetails>
-        </S.Bar>
-    )
+  return (
+    <S.Bar>
+      <S.InstallStatus
+        color={installButtonColor}
+        onClick={(e) => (installButtonColor==statusColorCode.true ? e.preventDefault() : onClickInstall())}
+      >
+        {installText}
+      </S.InstallStatus>
+      <S.Dot color={statusColor}></S.Dot>
+      <S.Dot color={statusColor}></S.Dot>
+      <S.Dot color={statusColor}></S.Dot>
+      <S.Arrow color={statusColor}>{"\u25bc"}</S.Arrow>
+      <S.Connect
+        background={statusColor}
+        disabled={connectDisable}
+        color={connectTextColor}
+        onClick={() => onClickConnect()}
+      >
+        {connectText}
+      </S.Connect>
+      <S.AccountDetails background={statusColor} display={displayStatus}>
+        <S.AddressRow>
+          <Tooltip title="Click to Copy Full Address" arrow>
+            <S.CopyAccount onClick={() => addressCopy()}>
+              Address: <b>{connectedAddress.slice(0,5)} ... {connectedAddress.slice(38, 42)}</b>
+            </S.CopyAccount>
+          </Tooltip>
+          <S.AccountLine>
+            Chain: <b>{connectedChain}</b>
+          </S.AccountLine>
+        </S.AddressRow>
+      </S.AccountDetails>
+    </S.Bar>
+  );
 }

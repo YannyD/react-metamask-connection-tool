@@ -15,25 +15,7 @@ It uses the following dependencies to establish a connection:
 
 It uses the following style libraries:
 -  Styled Components: https://styled-components.com/
--  @yaireo/title-tooltip:  https://www.npmjs.com/package/@yaireo/title-tooltip
--  Nanopop:  https://github.com/Simonwep/nanopop
 
-#  Use
-To use the component:
--  Add the StatusBar component folder and the above dependancies
--  Ensure that you have imported lazy, suspense from react:
-```
-import { lazy, Suspense } from 'react';
-```
--  Import component:
-```
-const StatusBar = lazy(()=>import("./Components/StatusBar"));
-```
--  Place it surrounded by a suspense block into your app
-```
-<Suspense fallback={<div>Loading...</div>}>
-      <StatusBar/>
-</Suspense>
 ```
 
 ![Sample1](./src/React-Tool-Sample1.jpg)
