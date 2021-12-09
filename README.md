@@ -16,8 +16,11 @@ It uses the following dependencies to establish a connection:
 It uses the following style libraries:
 -  Styled Components: https://styled-components.com/
 
-```
+# Searches for MetaMask Installation.
+![Sample1](./src/React-ToolSample1.jpg)<br>
 
-![Sample1](./src/React-Tool-Sample1.jpg)
-![Sample2](./src/React-Tool-Sample2.jpg)
+# Identifies connected addresses
+![Sample2](./src/React-Tool-Sample2.jpg)<br>
+
+# Displays active account and chain
 ![Sample3](./src/React-Tool-Sample3.jpg)
